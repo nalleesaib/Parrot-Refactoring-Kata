@@ -1,42 +1,46 @@
 package parrot;
 
-public class Parrot {
+/*
+1. identifier les pbs du code (en terme de violation des principes de SOLID)
+    -Non Respect du Single (S)
+    -Non Respect du O
+2. refactorer lorsque c'est nécessaire
+3. Pouvoir ajouter un Parrot sans "beaucoup d'effort"
+ */
+public abstract  class Parrot {
 
-    private ParrotTypeEnum type;
-    private int numberOfCoconuts;
-    private double voltage;
-    private boolean isNailed;
+    SpeedCalculator speedCalculator ;
 
-    public Parrot(ParrotTypeEnum type, int numberOfCoconuts, double voltage, boolean isNailed) {
-        this.type = type;
+    protected int numberOfCoconuts;
+    protected double voltage;
+    protected boolean isNailed;
+
+    public Parrot() {
+    }
+
+    public Parrot(int numberOfCoconuts, double voltage, boolean isNailed) {
         this.numberOfCoconuts = numberOfCoconuts;
         this.voltage = voltage;
         this.isNailed = isNailed;
     }
 
-    public double getSpeed() {
-        switch (type) {
-            case EUROPEAN:
-                return getBaseSpeed();
-            case AFRICAN:
-                return Math.max(0, getBaseSpeed() - getLoadFactor() * numberOfCoconuts);
-            case NORWEGIAN_BLUE:
-                return (isNailed) ? 0 : getBaseSpeed(voltage);
-            default:
-                throw new RuntimeException("Should be unreachable");
-        }
+    public abstract  double getSpeed();
+
+
+    protected double getBaseSpeed(double voltage) {
+
+        return speedCalculator.calculate(voltage,getBaseSpeed());
     }
 
-    private double getBaseSpeed(double voltage) {
-        return Math.min(24.0, voltage * getBaseSpeed());
-    }
-
-    private double getLoadFactor() {
+    protected double getLoadFactor() {
         return 9.0;
     }
 
-    private double getBaseSpeed() {
+    protected double getBaseSpeed() {
         return 12.0;
     }
 
+    public void setSpeedCalculator(SpeedCalculator speedCalculator) {
+        this.speedCalculator = speedCalculator;
+    }
 }
